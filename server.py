@@ -5,13 +5,14 @@ app = Flask(__name__)
 
 conn = sqlite3.connect('test.db', check_same_thread=False)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
         with conn:
-            booksDb = conn.cursor()
-            booksDb.execute('''select * from Books''')
-            books = booksDb.fetchall()
+            books_db = conn.cursor()
+            books_db.execute('''select * from Books''')
+            books = books_db.fetchall()
 
         book_list = []
         for book in books:
@@ -28,19 +29,20 @@ def index():
         values = (request.form['title'], request.form['author'])
 
         with conn:
-            booksDb = conn.cursor()
-            booksDb.execute('''insert into books(Title, Author) values (?, ?)''', values)
+            books_db = conn.cursor()
+            books_db.execute('''insert into Books(Title, Author) values (?, ?)''', values)
 
         return jsonify(True)
 
-@app.route('/book/<id>', methods=['GET'])
-def get_book_by_id(id):
+
+@app.route('/book/<book_id>', methods=['GET'])
+def get_book_by_id(book_id):
     if request.method == 'GET':
         with conn:
-            booksDb = conn.cursor()
-            booksDb.execute('''select * from Books where Id = ?''', (id))
+            books_db = conn.cursor()
+            books_db.execute('''select * from Books where Id = ?''', book_id)
 
-            book = booksDb.fetchone()
+            book = books_db.fetchone()
 
             book_dict = {
                 "id": book[0],
