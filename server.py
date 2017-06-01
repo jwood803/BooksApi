@@ -35,6 +35,23 @@ def index():
         return jsonify(True)
 
 
+@app.route('/book/edit', methods=['GET', 'POST'])
+def edit_book():
+    if request.method == 'GET':
+        return jsonify(True)
+
+    elif request.method == 'POST':
+        request_values = request.get_json()
+
+        values = (request_values["title"], request_values["author"], request_values["id"])
+
+        with conn:
+            books_db = conn.cursor()
+            books_db.execute('''update Books set Title = ?, Author = ? where id = ?''', values)
+
+        return jsonify(True)
+
+
 @app.route('/book/<book_id>', methods=['GET'])
 def get_book_by_id(book_id):
     if request.method == 'GET':
